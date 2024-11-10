@@ -3,31 +3,30 @@ version: 2.1
 executors:
   python-executor:
     docker:
-      - image: circleci/python:3.9  # Używamy obrazu Dockera z Pythonem 3.9
-    working_directory: ~/repo  # Katalog roboczy, w którym będziemy pracować
-
+      - image: circleci/python:3.9  
+    working_directory: ~/repo  
 jobs:
   install_dependencies:
     executor: python-executor
     steps:
-      - checkout  # Sprawdza repozytorium z GitHub
+      - checkout 
       - run:
           name: Install dependencies
           command: |
             python -m venv venv  # Tworzymy wirtualne środowisko
             . venv/bin/activate  # Aktywujemy wirtualne środowisko
             pip install --upgrade pip  # Aktualizujemy pip
-            pip install -r requirements.txt  # Instalujemy zależności z pliku requirements.txt
+            pip install pytest  # Ręcznie instalujemy pytest
 
   run_tests:
     executor: python-executor
     steps:
-      - checkout  # Sprawdza repozytorium
+      - checkout  
       - run:
           name: Run tests with pytest
           command: |
             . venv/bin/activate  # Aktywujemy środowisko wirtualne
-            pytest --maxfail=1 --disable-warnings -q  # Uruchamiamy testy, ograniczamy liczbę błędów i wyciszamy ostrzeżenia
+            pytest --maxfail=1 --disable-warnings -q  # Uruchamiamy testy
 
 workflows:
   version: 2
@@ -36,4 +35,5 @@ workflows:
       - install_dependencies
       - run_tests:
           requires:
-            - install_dependencies  # Run tests after dependencies are installed
+            - install_dependencies
+
